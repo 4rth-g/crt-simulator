@@ -1,113 +1,70 @@
-# 📺 Simulador de TV de Tubos (CRT)
+# Simulador de TV de Tubos (CRT)
 
-Projeto da disciplina **COMP0497 — Algoritmos e Estruturas de Dados I**  
+Projeto da disciplina **COMP0497 — Algoritmos e Estruturas de Dados I**
 UFS DCOMP — Semestre 2026.1
 
 ---
 
 ## Sobre
 
-Simulador de televisor CRT que utiliza uma **multilista encadeada** implementada do zero como estrutura central para representar a grade de pixels da tela. O feixe de elétrons varrendo pixel a pixel é literalmente um traversal da lista — tornando a estrutura de dados visível e animada.
+Simulador de televisor CRT onde a tela é representada por uma **multilista encadeada** implementada do zero. Cada linha da grade é uma `Lista` encadeada de `Pixel`s — o traversal da estrutura é a varredura da tela.
 
 **Stack:**
 - Backend: Java 17 + Javalin 6 + Maven
-- Frontend: React + Vite + Tailwind CSS + Canvas API
-- Comunicação: WebSocket (frames) + REST (comandos)
-- Infraestrutura: Docker + Docker Compose
+- Frontend: React 18 + Vite + Tailwind CSS + Canvas API
+- Comunicação: REST
+- Infra: Docker + Docker Compose
 
 ---
 
-## Estrutura do Repositório
+## Estrutura
 
 ```
 crt-simulator/
-├── backend/          # Java — multilista, motor CRT, servidor HTTP
-├── frontend/         # React/Vite — tela CRT, painel debug, controles
-├── docs/             # Documentação de arquitetura
-├── docker-compose.yml          # Produção
-├── docker-compose.dev.yml      # Desenvolvimento (hot reload)
-└── README.md
+├── backend/src/main/java/crt/
+│   ├── Pixel.java       # nó da lista (value + next)
+│   ├── Lista.java       # lista encadeada de pixels (uma scanline)
+│   ├── Multilista.java  # grade completa: array de Lista[]
+│   └── Main.java        # servidor Javalin + endpoints REST
+├── frontend/src/
+│   ├── App.jsx          # estado global + fetch
+│   └── components/
+│       ├── PixelGrid.jsx  # canvas — renderiza a grade
+│       └── Controls.jsx   # botões de ação
+├── docker-compose.yml          # produção
+└── docker-compose.dev.yml      # desenvolvimento (hot reload)
 ```
 
 ---
 
-## Rodando com Docker
+## Rodando
 
-### Pré-requisitos
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-
-> Funciona em Linux, macOS e Windows (via Docker Desktop ou WSL2).
-
-### Desenvolvimento (hot reload)
+### Com Docker (recomendado)
 
 ```bash
+# Desenvolvimento — backend:7070, frontend:5173
 docker compose -f docker-compose.dev.yml up
-```
 
-- Backend disponível em: `http://localhost:7070`
-- Frontend disponível em: `http://localhost:5173`
-- Alterações no código refletem automaticamente sem rebuild.
-
-### Produção
-
-```bash
+# Produção — porta 80
 docker compose up --build
 ```
 
-- Aplicação disponível em: `http://localhost:80`
-
----
-
-## Rodando sem Docker (desenvolvimento local)
-
-### Backend
+### Sem Docker
 
 ```bash
-cd backend
-./mvnw spring-boot:run   # ou: mvn compile exec:java
+# Backend
+cd backend && mvn compile exec:java
+
+# Frontend
+cd frontend && npm install && npm run dev
 ```
-
-Requer Java 17+ e Maven instalados.
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Requer Node.js 18+.
 
 ---
 
-## Documentação
+## API
 
-- [Arquitetura e Escopo do Projeto](docs/simulador_crt_arquitetura.docx)
-
----
-
-## Equipe
-
-| Membro | Módulos |
-|--------|---------|
-| — | `model.PixelNode` + `model.MultiList` |
-| — | `engine.CRTEngine` + `engine.ScanlineEngine` |
-| — | `engine.PhosphorDecay` + `engine.NoiseGenerator` + `engine.GhostingEffect` |
-| — | Frontend: `CRTScreen` + `crtEffects.js` + `useWebSocket` |
-| — | `api.ApiRouter` + `FrameSerializer` + `DebugPanel` + `Main` |
-
----
-
-## Convenções de Branch
-
-```
-main          # estável, sempre funcional
-dev           # integração contínua
-feat/nome     # funcionalidades novas
-fix/nome      # correções
-```
-
-Pull requests sempre para `dev`. Merge para `main` apenas quando estável.
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/state` | Retorna a grade completa como `int[][]` |
+| `POST` | `/api/pixel` | `{ row, col, value }` — seta um pixel |
+| `POST` | `/api/clear` | Zera toda a grade |

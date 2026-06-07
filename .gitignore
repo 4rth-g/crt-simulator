@@ -16,6 +16,7 @@ frontend/.vite/
 .vscode/
 *.swp
 *.swo
+.claude/
 
 # OS
 .DS_Store
@@ -27,3 +28,8 @@ Thumbs.db
 # Env
 .env
 .env.local
+.env*.local
+
+# Logs
+*.log
+logs/

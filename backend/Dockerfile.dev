@@ -1,4 +1,4 @@
-# Dev: sem build otimizado, com Maven wrapper para hot reload
+# Dev: compila e executa via Maven, sem build otimizado
 FROM maven:3.9-eclipse-temurin-17
 
 WORKDIR /app
@@ -6,7 +6,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -q
 
 # Código montado via bind mount no compose.dev
-# O Maven fica watching por mudanças
+# Mudanças no Java requerem restart do container
 
 EXPOSE 7070
 

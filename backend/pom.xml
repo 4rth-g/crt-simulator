@@ -17,7 +17,7 @@
     </properties>
 
     <dependencies>
-        <!-- Servidor HTTP + WebSocket leve, zero XML -->
+        <!-- Servidor HTTP leve, zero XML -->
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>

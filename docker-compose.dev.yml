@@ -8,10 +8,8 @@ services:
     ports:
       - "7070:7070"
     volumes:
-      # Bind mount: edições locais refletem no container
       - ./backend/src:/app/src
       - ./backend/pom.xml:/app/pom.xml
-      # Cache Maven fora do container (evita baixar tudo a cada restart)
       - maven_cache:/root/.m2
     restart: unless-stopped
 
@@ -23,15 +21,8 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      # Bind mount: Vite HMR funciona normalmente
-      - ./frontend/src:/app/src
-      - ./frontend/index.html:/app/index.html
-      - ./frontend/vite.config.js:/app/vite.config.js
-      # node_modules fica no container, não no host
+      - ./frontend:/app
       - /app/node_modules
-    environment:
-      - VITE_API_URL=http://localhost:7070
-      - VITE_WS_URL=ws://localhost:7070
     depends_on:
       - backend
     restart: unless-stopped

@@ -13,7 +13,7 @@ RUN mvn package -DskipTests -q
 FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/crt-simulator-*.jar app.jar
 
 EXPOSE 7070
 
