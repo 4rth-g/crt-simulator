@@ -34,6 +34,26 @@ public class Main {
             tela.clear();
             ctx.status(204);
         });
+
+        app.post("/api/pattern", ctx -> {
+            String name = ctx.queryParam("name");
+            tela.clear();
+            if ("xadrez".equals(name)) {
+                for (int r = 0; r < ROWS; r++)
+                    for (int c = 0; c < COLS; c++)
+                        if ((r + c) % 2 == 0) tela.setPixel(r, c, 255);
+            } else if ("borda".equals(name)) {
+                for (int c = 0; c < COLS; c++) { tela.setPixel(0, c, 255); tela.setPixel(ROWS - 1, c, 255); }
+                for (int r = 0; r < ROWS; r++) { tela.setPixel(r, 0, 255); tela.setPixel(r, COLS - 1, 255); }
+            } else if ("onda".equals(name)) {
+                for (int c = 0; c < COLS; c++) {
+                    int r = (int) ((Math.sin(c * Math.PI / 10) + 1) / 2 * (ROWS - 1));
+                    tela.setPixel(r, c, 255);
+                    if (r + 1 < ROWS) tela.setPixel(r + 1, c, 180);
+                }
+            }
+            ctx.status(204);
+        });
     }
 
     record PixelRequest(int row, int col, int value) {}
