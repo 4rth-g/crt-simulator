@@ -10,7 +10,11 @@ mkdir -p backend/src/main/resources/public
 cp -r frontend/dist/. backend/src/main/resources/public/
 
 echo "[3/3] Buildando JAR..."
-mvn -f backend/pom.xml package -DskipTests -q
+docker run --rm \
+  -v "$(pwd)/backend":/app \
+  -v maven_cache:/root/.m2 \
+  docker.io/library/maven:3.9-eclipse-temurin-17 \
+  mvn package -DskipTests -q -f /app/pom.xml
 
 JAR=$(ls backend/target/crt-simulator-*.jar)
 echo ""
