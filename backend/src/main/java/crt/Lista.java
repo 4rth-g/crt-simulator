@@ -1,3 +1,12 @@
+/*
+ * TV Tubo Simulator — COMP0497 Algoritmos e Estruturas de Dados I (UFS, 2026.1)
+ * Equipe G12:
+ *   Arthur de Azevedo Grazzia
+ *   João Herman Souza de Araújo
+ *   João Vitor Vital Leão
+ *   Renato Veloso Pires Filho
+ *   Wilson Fernandes Carneiro Júnior
+ */
 package crt;
 
 /** Lista encadeada de pixels — representa uma scanline da tela CRT. */
