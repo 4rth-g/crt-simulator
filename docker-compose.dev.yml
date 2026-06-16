@@ -12,6 +12,12 @@ services:
       - ./backend/pom.xml:/app/pom.xml
       - maven_cache:/root/.m2
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7070/api/state"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
 
   frontend:
     build:
@@ -24,7 +30,8 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
