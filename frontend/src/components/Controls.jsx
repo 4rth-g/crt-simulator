@@ -18,7 +18,8 @@ const PATTERNS = [
 
 const Controls = ({ onClear, onPattern }) => {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-3">
+      {/* Padrões */}
       <div className="flex flex-wrap justify-center gap-2">
         {PATTERNS.map(p => (
           <button key={p.name} onClick={() => onPattern(p.name)} className={BTN}>
@@ -26,7 +27,8 @@ const Controls = ({ onClear, onPattern }) => {
           </button>
         ))}
       </div>
-      <button onClick={onClear} className={`${BTN} border-red-900 text-red-400 hover:text-red-200 hover:bg-red-950 px-12`}>
+
+      <button onClick={onClear} className={`${BTN} border-red-900 text-red-400 hover:text-red-200 hover:bg-red-950 px-16`}>
         LIMPAR
       </button>
     </div>

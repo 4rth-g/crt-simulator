@@ -26,7 +26,11 @@ public class Main {
 
         app.post("/api/pixel", ctx -> {
             var body = ctx.bodyAsClass(PixelRequest.class);
-            tela.setPixel(body.row(), body.col(), body.value());
+            if (body.row() < 0 || body.row() >= ROWS || body.col() < 0 || body.col() >= COLS) {
+                ctx.status(400); return;
+            }
+            int value = Math.max(0, Math.min(255, body.value()));
+            tela.setPixel(body.row(), body.col(), value);
             ctx.status(204);
         });
 
