@@ -1,6 +1,7 @@
 package crt;
 
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
 
 public class Main {
 
@@ -10,11 +11,9 @@ public class Main {
     public static void main(String[] args) {
         Multilista tela = new Multilista(ROWS, COLS);
 
-        Javalin app = Javalin.create(config ->
-            config.bundledPlugins.enableCors(cors ->
-                cors.addRule(rule -> rule.anyHost())
-            )
-        ).start(7070);
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add("/public", Location.CLASSPATH);
+        }).start(7070);
 
         app.get("/api/state", ctx -> {
             int[][] grid = new int[ROWS][COLS];

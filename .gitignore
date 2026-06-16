@@ -2,6 +2,10 @@
 backend/target/
 backend/bin/
 backend/.mvn/
+
+# Frontend embutido (gerado pelo build.sh, não commitar)
+backend/src/main/resources/public/*
+!backend/src/main/resources/public/.gitkeep
 *.class
 *.jar
 *.war
