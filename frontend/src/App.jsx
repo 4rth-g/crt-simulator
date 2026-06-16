@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import PixelGrid from './components/PixelGrid'
 import Controls from './components/Controls'
 
-const ROWS = 30
-const COLS = 60
+const ROWS = 40
+const COLS = 80
 
 const App = () => {
   const [grid, setGrid] = useState([])

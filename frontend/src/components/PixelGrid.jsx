@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 const CELL = 14
-const PIXELS_PER_FRAME = 10  // quantos pixels o feixe avança por frame (~60fps → ~3s por varredura)
+const PIXELS_PER_FRAME = 20  // quantos pixels o feixe avança por frame (~60fps → ~3s por varredura)
 const DECAY = 0.99            // fator de decaimento do fósforo por frame
 
 const PixelGrid = ({ grid, rows, cols, onPixelClick, animate }) => {
