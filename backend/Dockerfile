@@ -1,5 +1,5 @@
 # ── Build stage ────────────────────────────────────────────────────────────────
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM docker.io/library/maven:3.9-eclipse-temurin-17 AS build
 
 WORKDIR /app
 COPY pom.xml .
@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn package -DskipTests -q
 
 # ── Runtime stage ───────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jre-alpine
+FROM docker.io/library/eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 COPY --from=build /app/target/crt-simulator-*.jar app.jar

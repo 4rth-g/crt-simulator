@@ -16,7 +16,7 @@ const PHOSPHOR_GLOW = {
   amber: 'rgba(255,160,0,0.8)',
 }
 
-const PixelGrid = ({ grid, rows, cols, onPixelDraw, animate, phosphor = 'white' }) => {
+const PixelGrid = ({ grid, rows, cols, onPixelDraw, animate, phosphor = 'amber' }) => {
   const canvasRef = useRef(null)
   const stateRef = useRef({
     luminance: new Float32Array(rows * cols),

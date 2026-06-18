@@ -1,8 +1,8 @@
 const BTN = "px-4 py-2 bg-zinc-900 text-gray-300 font-mono border border-zinc-700 hover:bg-zinc-800 hover:text-white transition-colors text-sm"
 
 const PATTERNS = [
-  { name: 'coracao',    label: 'CORAÇÃO'    },
-  { name: 'arvore',     label: 'ÁRVORE'     },
+  { name: 'coracao',    label: 'CORAÇÃO'  },
+  { name: 'arvore',     label: 'ÁRVORE'   },
   { name: 'estrela',    label: 'ESTRELA'    },
   { name: 'solido',     label: 'SÓLIDO'     },
   { name: 'circulo',    label: 'CÍRCULO'    },

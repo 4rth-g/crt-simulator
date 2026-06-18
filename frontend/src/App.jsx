@@ -1,3 +1,12 @@
+/*
+ * TV Tubo Simulator — COMP0497 Algoritmos e Estruturas de Dados I (UFS, 2026.1)
+ * Equipe G12:
+ *   Arthur de Azevedo Grazzia
+ *   João Herman Souza de Araújo
+ *   João Vitor Vital Leão
+ *   Renato Veloso Pires Filho
+ *   Wilson Fernandes Carneiro Júnior
+ */
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import PixelGrid from './components/PixelGrid'
 import Controls from './components/Controls'
@@ -9,7 +18,7 @@ const COLS = 80
 const App = () => {
   const [grid, setGrid] = useState([])
   const [animate, setAnimate] = useState(false)
-  const phosphor = 'white'
+  const [phosphor, setPhosphor] = useState('white')
   const [showData, setShowData] = useState(false)
 
   const activeNodes = useMemo(

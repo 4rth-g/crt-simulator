@@ -38,21 +38,20 @@ public class Multilista {
     }
 
     /** Retorna o valor do pixel em (row, col). */
-    public int getPixel(int row, int col) {
+    public synchronized int getPixel(int row, int col) {
         return getRow(row).getPixel(col);
     }
 
     /** Define o valor do pixel em (row, col). */
-    public void setPixel(int row, int col, int value) {
+    public synchronized void setPixel(int row, int col, int value) {
         getRow(row).setPixel(col, value);
     }
 
-    /** Zera todos os pixels da grade. */
-    public void clear() {
-        for (Lista row : rows) row.clear();
+    /** Zera todos os pixels da grade sem destruir a estrutura de nós. */
+    public synchronized void clear() {
         for (int i = 0; i < numRows; i++)
             for (int j = 0; j < numCols; j++)
-                rows[i].addPixel(0);
+                rows[i].setPixel(j, 0);
     }
 
     public int getNumRows() { return numRows; }
