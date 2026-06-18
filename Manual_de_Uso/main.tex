@@ -1,0 +1,245 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\begin{document}
+
+\begin{center}
+    \begin{minipage}{0.2\textwidth}
+        \centering
+        \includegraphics[width=2.5cm]{logo_ufs.png}
+    \end{minipage}
+    \begin{minipage}{0.55\textwidth}
+        \centering
+        \textbf{UNIVERSIDADE FEDERAL DE SERGIPE\\
+        DEPARTAMENTO DE COMPUTAÇÃO} \\[0.2cm]
+        \textbf{ALGORITMOS E ESTRUTURAS DE DADOS I - 2026.1}
+    \end{minipage}
+    \begin{minipage}{0.2\textwidth}
+        \centering
+        \includegraphics[width=2.5cm]{logo_dcomp.png}
+    \end{minipage}
+
+    \vspace{1cm}
+    \Large{\textbf{MANUAL DE USO E DOCUMENTAÇÃO TÉCNICA}}\\[0.2cm]
+    \Large{\textbf{TV TUBO SIMULATOR}}\\[1cm]
+\end{center}
+
+\section{Equipe}
+\begin{itemize}
+    \item \textbf{Arthur de Azevedo Grazzia} - (Slides: 15 a 17)
+    \item \textbf{João Herman Souza de Araújo} - (Slides: 1 a 6)
+    \item \textbf{João Vitor Vital Leão} - (Slides: 12 a 14)
+    \item \textbf{Renato Veloso Pires Filho} - (Slides: 18 a 20)
+    \item \textbf{Wilson Fernandes Carneiro Júnior} - (Slides: 7 a 11)
+\end{itemize}
+
+\section{Objetivo}
+Simular o funcionamento de uma TV CRT usando Listas Simplesmente Encadeadas implementadas do zero. A grade de pixels é uma Multilista (array de listas encadeadas), onde cada lista representa uma scanline. O acesso sequencial obrigatório $O(N)$ da estrutura espelha o percurso físico do feixe de elétrons no tubo.
+
+\section{Stack}
+\begin{itemize}
+    \item \textbf{Backend:} Java 17, Javalin 6 (API REST), Maven.
+    \item \textbf{Frontend:} React 18, Vite, Canvas API.
+    \item \textbf{Infra:} Docker e Docker Compose.
+\end{itemize}
+
+\section{Mapeamento Estrutura de Dados $\rightarrow$ Visual}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{>{\hsize=0.8\hsize}X >{\hsize=1.1\hsize}X >{\hsize=1.1\hsize}X}
+        \toprule
+        \textbf{Conceito AED} & \textbf{Implementação} & \textbf{Efeito Visual} \\
+        \midrule
+        Nó da lista & \texttt{Pixel.java} & Ponto luminoso na tela. \\
+        \midrule
+        Lista encadeada & \texttt{Lista.java} & Scanline horizontal. \\
+        \midrule
+        Multilista & \texttt{Multilista.java} & Grade completa: 40 linhas $\times$ 80 colunas (3200 nós). \\
+        \midrule
+        Percurso $O(N)$ & \texttt{for (current = current.next)} & Feixe avança pixel a pixel, sem saltos. \\
+        \midrule
+        Decaimento & \texttt{luminance[i] *= 0.99} por frame & Fósforo apagando gradualmente a 60 fps. \\
+        \midrule
+        Índice linear $\rightarrow$ 2D & $r = \lfloor i/80 \rfloor,\; c = i \bmod 80$ & Posição do feixe mapeada para (lista, nó). \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Relação entre estrutura de dados e efeito visual.}
+\end{table}
+
+\section{Implementação — Backend}
+
+\subsection{\texttt{Pixel.java} — Nó da lista}
+\begin{lstlisting}[language=Java]
+public class Pixel {
+    int value; // brilho do fosforo (0-255)
+    Pixel next; // proximo pixel da scanline
+
+    Pixel(int value) { this.value = value; }
+}
+\end{lstlisting}
+
+\subsection{\texttt{Lista.java} — Travessia $O(N)$}
+Sem acesso direto por índice: o algoritmo percorre todos os nós anteriores ao alvo.
+\begin{lstlisting}[language=Java]
+public void setPixel(int index, int value) {
+    Pixel current = head;
+    for (int i = 0; i < index; i++)
+        current = current.next;
+    current.value = value;
+}
+\end{lstlisting}
+
+\subsection{\texttt{Multilista.java} — Grade bidimensional}
+Array de Listas: acesso à linha em $O(1)$, acesso ao pixel em $O(N)$.
+\begin{lstlisting}[language=Java]
+public Multilista(int rows, int cols) {
+    this.rows = new Lista[rows];
+    for (int i = 0; i < rows; i++) {
+        this.rows[i] = new Lista();
+        for (int j = 0; j < cols; j++)
+            this.rows[i].addPixel(0);
+    }
+}
+\end{lstlisting}
+
+\subsection{\texttt{Main.java} — API REST}
+O endpoint \texttt{/api/state} serializa a Multilista para JSON a cada requisição.
+\begin{lstlisting}[language=Java]
+app.get("/api/state", ctx -> {
+    int[][] grid = new int[ROWS][COLS]; // 40 x 80
+    for (int r = 0; r < ROWS; r++)
+        for (int c = 0; c < COLS; c++)
+            grid[r][c] = tela.getPixel(r, c);
+    ctx.json(grid);
+});
+\end{lstlisting}
+
+\section{Implementação — Frontend}
+
+\subsection{\texttt{App.jsx} — Sincronização com o backend}
+\begin{lstlisting}[language=Java]
+const [grid, setGrid] = useState([]);
+
+const fetchGrid = () => {
+    fetch('/api/state')
+        .then(r => r.json())
+        .then(setGrid); // atualiza o canvas automaticamente
+}
+\end{lstlisting}
+
+\subsection{\texttt{PixelGrid.jsx} — Motor gráfico (Canvas API)}
+Renderização via Canvas evita manipulação do DOM para 3200 pixels. O decaimento do fósforo e o mapeamento do índice linear para a grade da Multilista são feitos a cada frame.
+\begin{lstlisting}[language=Java]
+const DECAY = 0.99;
+
+// Decai o fosforo de todos os pixels
+for (let i = 0; i < total; i++) {
+    s.luminance[i] *= DECAY;
+    if (s.luminance[i] < 1) s.luminance[i] = 0;
+}
+
+// Mapeia indice linear para (lista, no) da Multilista
+const r = Math.floor(i / cols);
+const c = i % cols;
+s.luminance[i] = s.grid[r][c];
+
+rafId = requestAnimationFrame(frame); // 60 fps
+\end{lstlisting}
+
+\subsection{\texttt{DataPanel.jsx} — Visualização da Multilista}
+Exibe em tempo real uma barra por lista (\texttt{L00}–\texttt{L39}) proporcional ao número de nós ativos, e o contador global de nós ativados sobre 3200.
+
+\section{Manual de Operação}
+
+\subsection{Pré-requisito}
+Instalar o \textbf{Docker Desktop} (\texttt{docker.com/get-started}). Não é necessário instalar Java, Node.js ou qualquer outra dependência — tudo é compilado e executado dentro dos contêineres.
+
+\subsection{Executar a aplicação}
+No terminal, dentro da pasta do projeto:
+
+\begin{lstlisting}[language=bash]
+docker compose up --build -d
+# Acesse: http://localhost:8080
+\end{lstlisting}
+
+Para encerrar:
+
+\begin{lstlisting}[language=bash]
+docker compose down
+\end{lstlisting}
+
+\subsection{Recursos da Interface}
+
+\subsubsection{Desenho livre}
+Clique e arraste na tela para desenhar. O modo (acender/apagar) é definido pelo estado do primeiro pixel tocado.
+
+\subsubsection{Padrões disponíveis}
+\begin{itemize}
+    \item \textbf{CORAÇÃO} — equação implícita $(x^2+y^2-1)^3 - x^2y^3 \leq 0$.
+    \item \textbf{ÁRVORE} — três triângulos sobrepostos com tronco.
+    \item \textbf{ESTRELA} — polígono de 5 pontas via ray-casting.
+    \item \textbf{SÓLIDO} — todos os 3200 nós ativos.
+    \item \textbf{CÍRCULO} — disco central por distância euclidiana.
+    \item \textbf{GRADIENTE} — intensidade 0–255 da esquerda para a direita.
+    \item \textbf{VERTICAL} — colunas pares ativas.
+    \item \textbf{HORIZONTAL} — linhas pares ativas (scanlines visíveis).
+    \item \textbf{GRADE} — malha a cada 4 posições.
+    \item \textbf{DIAGONAL} — linhas diagonais a cada 8 posições.
+    \item \textbf{XADREZ} — pixels alternados.
+    \item \textbf{BORDA} — apenas o perímetro da grade.
+    \item \textbf{ONDA} — curva senoidal coluna a coluna via $\sin$.
+\end{itemize}
+
+\subsubsection{VER ESTRUTURA}
+Abre o \texttt{DataPanel}: barras por lista mostrando nós ativos e contador global.
+
+\subsubsection{LIMPAR}
+Envia \texttt{POST /api/clear}: zera todos os 3200 nós da Multilista.
+
+\section{Vídeo de Apresentação}
+O vídeo de apresentação do trabalho, bem como os demais arquivos do projeto, estão disponíveis na pasta compartilhada da equipe:
+
+\begin{center}
+\url{https://drive.google.com/drive/folders/1U87qw185C8NKVX_4gURCESAmhsiYlvxn}
+\end{center}
+
+\end{document}

@@ -37,3 +37,12 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Entrega
+entrega_G12/
+entrega_G12.zip
+backend/dependency-reduced-pom.xml
+
+# LaTeX auxiliares
+Manual_de_Uso/*.aux
+Manual_de_Uso/*.out
